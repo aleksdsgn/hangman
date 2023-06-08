@@ -13,6 +13,8 @@ const word = ref('василий')
 const letters = ref<string[]>([])
 // только те символы которые есть в загаданном слове
 const correctLetters = computed(() => letters.value.filter(x => word.value.includes(x)))
+// только ошибочные символы
+const wrongLetters = computed(() => letters.value.filter(x => !word.value.includes(x)))
 
 window.addEventListener('keydown', ({ key }) => {
   // слушаем только кириллицу
@@ -26,10 +28,11 @@ window.addEventListener('keydown', ({ key }) => {
   {{ word }}
   {{ letters }}
   {{ correctLetters }}
+  {{ wrongLetters }}
   <GameHeader />
   <div class="game-container">
     <GameFigure />
-    <GameWrongLetters />
+    <GameWrongLetters :wrong-letters="wrongLetters" />
     <GameWord :word="word" :correct-letters="correctLetters"/>
   </div>
 
