@@ -6,17 +6,15 @@ import GameWord from './components/GameWord.vue'
 import GamePopup from './components/GamePopup.vue'
 import GameNotification from './components/GameNotification.vue'
 import { computed, ref, watch } from 'vue'
-import axios from 'axios'
+import { getRandomName } from './api/getRandomName'
 
 // загаданное случайное слово
 const word = ref('')
 
 const getRandomWord = async () => {
   try {
-    const { data } = await axios<{ FirstName: string }>(
-      'https://api.randomdatatools.ru/?unescaped=false&params=FirstName'
-    )
-    word.value = data.FirstName.toLowerCase()
+    const name = await getRandomName()
+    word.value = name.toLowerCase()
   } catch (err) {
     console.log(err)
     word.value = ''
