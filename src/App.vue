@@ -9,14 +9,22 @@ import { computed, ref } from 'vue'
 
 // загаданное слово
 const word = ref('василий')
-// массив с введенными символами
+// массив со всеми введенными символами
 const letters = ref<string[]>([])
 // только те символы которые есть в загаданном слове
 const correctLetters = computed(() => letters.value.filter(x => word.value.includes(x)))
 // только ошибочные символы
 const wrongLetters = computed(() => letters.value.filter(x => !word.value.includes(x)))
+const notification = ref<InstanceType<typeof GameNotification> | null>(null)
 
 window.addEventListener('keydown', ({ key }) => {
+  // показ предупреждения о повторно введенном символе
+  if (letters.value.includes(key)) {
+    notification.value?.open()
+    setTimeout(() => notification.value?.close(), 2000)
+    return
+  }
+
   // слушаем только кириллицу
   if (/[а-яА-ЯёЁ]/.test(key)) {
     letters.value.push(key.toLowerCase())
@@ -37,5 +45,5 @@ window.addEventListener('keydown', ({ key }) => {
   </div>
 
   <GamePopup v-if="false" />
-  <GameNotification />
+  <GameNotification ref="notification"/>
 </template>

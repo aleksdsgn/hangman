@@ -13,7 +13,7 @@ defineProps<Props>()
       <p>Ошибки</p>
       <span v-for="(letter, index) in wrongLetters" :key="letter">
         <!-- если символ последний отрисовываем без запятой иначе с запятой-->
-      {{ index === wrongLetters.length - 1 ? letter : `${letter}, ` }}
+        {{ index === wrongLetters.length - 1 ? letter : `${letter}, ` }}
       </span>
     </div>
   </div>
