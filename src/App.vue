@@ -39,7 +39,7 @@ window.addEventListener('keydown', ({ key }) => {
   {{ wrongLetters }}
   <GameHeader />
   <div class="game-container">
-    <GameFigure />
+    <GameFigure :wrong-letters-count="wrongLetters.length" />
     <GameWrongLetters :wrong-letters="wrongLetters" />
     <GameWord :word="word" :correct-letters="correctLetters"/>
   </div>
