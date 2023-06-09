@@ -6,9 +6,25 @@ import GameWord from './components/GameWord.vue'
 import GamePopup from './components/GamePopup.vue'
 import GameNotification from './components/GameNotification.vue'
 import { computed, ref, watch } from 'vue'
+import axios from 'axios'
 
-// загаданное слово
-const word = ref('василий')
+// загаданное случайное слово
+const word = ref('')
+
+const getRandomWord = async () => {
+  try {
+    const { data } = await axios<{ FirstName: string }>(
+      'https://api.randomdatatools.ru/?unescaped=false&params=FirstName'
+    )
+    word.value = data.FirstName.toLowerCase()
+  } catch (err) {
+    console.log(err)
+    word.value = ''
+  }
+}
+
+getRandomWord()
+
 // массив со всеми введенными символами
 const letters = ref<string[]>([])
 // только те символы которые есть в загаданном слове
@@ -57,7 +73,8 @@ window.addEventListener('keydown', ({ key }) => {
   }
 })
 
-const restart = () => {
+const restart = async () => {
+  await getRandomWord()
   letters.value = []
   popup.value?.close()
 }
