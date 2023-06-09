@@ -8,14 +8,18 @@ import GameNotification from './components/GameNotification.vue'
 import { ref, watch } from 'vue'
 import { useRandomWord } from './composables/useRandomWord'
 import { useLetters } from './composables/useLetters'
+import { useNotification } from './composables/useNotification'
 
 const { word, getRandomWord } = useRandomWord()
 const { letters, correctLetters, wrongLetters, isLose, isWin, addLetter, resetLetters } = useLetters(word)
-
-// уведомление о повторновведеном символе
-const notification = ref<InstanceType<typeof GameNotification> | null>(null)
+const { notification, showNotification } = useNotification()
 // попап об окончании игры
 const popup = ref<InstanceType<typeof GamePopup> | null>(null)
+const restart = async () => {
+  await getRandomWord()
+  resetLetters()
+  popup.value?.close()
+}
 
 watch(correctLetters, () => {
   // преобразуем строку в массив и проверяем каждый символ
@@ -39,19 +43,12 @@ window.addEventListener('keydown', ({ key }) => {
 
   // показ предупреждения о повторно введенном символе
   if (letters.value.includes(key)) {
-    notification.value?.open()
-    setTimeout(() => notification.value?.close(), 2000)
+    showNotification()
     return
   }
 
   addLetter(key)
 })
-
-const restart = async () => {
-  await getRandomWord()
-  resetLetters()
-  popup.value?.close()
-}
 </script>
 
 <template>
