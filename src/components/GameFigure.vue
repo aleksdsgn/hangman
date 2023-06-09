@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Prop } from 'vue';
-
 export interface Props {
   wrongLettersCount: number
 }
