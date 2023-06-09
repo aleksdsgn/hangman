@@ -15,23 +15,35 @@ const letters = ref<string[]>([])
 const correctLetters = computed(() => letters.value.filter(x => word.value.includes(x)))
 // только ошибочные символы
 const wrongLetters = computed(() => letters.value.filter(x => !word.value.includes(x)))
+// проигравшее состояние
+const isLose = computed(() => wrongLetters.value.length === 6)
+// выигравшее состояние
+const isWin = computed(() => [...word.value].every(x => correctLetters.value.includes(x)))
+// уведомление о повторновведеном символе
 const notification = ref<InstanceType<typeof GameNotification> | null>(null)
+// попап об окончании игры
 const popup = ref<InstanceType<typeof GamePopup> | null>(null)
 
 watch(correctLetters, () => {
   // преобразуем строку в массив и проверяем каждый символ
-  if ([...word.value].every(x => correctLetters.value.includes(x))) {
+  if (isWin.value) {
     popup.value?.open('win')
   }
 })
 
 watch(wrongLetters, () => {
-  if (wrongLetters.value.length === 6) {
+  if (isLose.value) {
     popup.value?.open('lose')
   }
 })
 
+// слушатель ввода символов
 window.addEventListener('keydown', ({ key }) => {
+  // прекратить слушать если игра окончена
+  if (isLose.value || isWin.value) {
+    return
+  }
+
   // показ предупреждения о повторно введенном символе
   if (letters.value.includes(key)) {
     notification.value?.open()
