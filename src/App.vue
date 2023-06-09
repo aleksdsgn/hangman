@@ -5,21 +5,13 @@ import GameWrongLetters from './components/GameWrongLetters.vue'
 import GameWord from './components/GameWord.vue'
 import GamePopup from './components/GamePopup.vue'
 import GameNotification from './components/GameNotification.vue'
-import { computed, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useRandomWord } from './composables/useRandomWord'
+import { useLetters } from './composables/useLetters'
 
 const { word, getRandomWord } = useRandomWord()
+const { letters, correctLetters, wrongLetters, isLose, isWin, addLetter, resetLetters } = useLetters(word)
 
-// массив со всеми введенными символами
-const letters = ref<string[]>([])
-// только те символы которые есть в загаданном слове
-const correctLetters = computed(() => letters.value.filter(x => word.value.includes(x)))
-// только ошибочные символы
-const wrongLetters = computed(() => letters.value.filter(x => !word.value.includes(x)))
-// проигравшее состояние
-const isLose = computed(() => wrongLetters.value.length === 6)
-// выигравшее состояние
-const isWin = computed(() => [...word.value].every(x => correctLetters.value.includes(x)))
 // уведомление о повторновведеном символе
 const notification = ref<InstanceType<typeof GameNotification> | null>(null)
 // попап об окончании игры
@@ -52,15 +44,12 @@ window.addEventListener('keydown', ({ key }) => {
     return
   }
 
-  // слушаем только кириллицу
-  if (/[а-яА-ЯёЁ]/.test(key)) {
-    letters.value.push(key.toLowerCase())
-  }
+  addLetter(key)
 })
 
 const restart = async () => {
   await getRandomWord()
-  letters.value = []
+  resetLetters()
   popup.value?.close()
 }
 </script>
