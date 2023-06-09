@@ -6,22 +6,9 @@ import GameWord from './components/GameWord.vue'
 import GamePopup from './components/GamePopup.vue'
 import GameNotification from './components/GameNotification.vue'
 import { computed, ref, watch } from 'vue'
-import { getRandomName } from './api/getRandomName'
+import { useRandomWord } from './composables/useRandomWord'
 
-// загаданное случайное слово
-const word = ref('')
-
-const getRandomWord = async () => {
-  try {
-    const name = await getRandomName()
-    word.value = name.toLowerCase()
-  } catch (err) {
-    console.log(err)
-    word.value = ''
-  }
-}
-
-getRandomWord()
+const { word, getRandomWord } = useRandomWord()
 
 // массив со всеми введенными символами
 const letters = ref<string[]>([])
